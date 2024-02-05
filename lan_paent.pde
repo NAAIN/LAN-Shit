@@ -11,7 +11,7 @@ int BColor = 200,port = 5510,x,y,Color;
 color col = color(255,255,255,255);
 Float Size;
 Boolean clRUN = false;
-String[] IP = new String[2],nefor = new String[4];
+String[] IP = new String[2],packet = new String[4];
 
 void setup() {
   background(BColor);
@@ -63,16 +63,17 @@ void draw() {
   if(paentClient.active()) {
   if(mousePressed == true) {
     if (mouseX > 10 & mouseX < 579+10 & mouseY > 10 & mouseY < 551+10) {
-      paentClient.write("DRAW#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"\n");
+      paentClient.write("DRAW#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#;");
     }
   }
   
   if(paentClient.available() > 0) {
-    nefor = split(paentClient.readString(),'#');
+    packet = split(paentClient.readStringUntil(59),'#');
+    //println(packet);
     pg.beginDraw();
-    pg.fill(int(nefor[3]));
+    pg.fill(int(packet[3]));
     pg.rectMode(CENTER);
-    pg.square(float(nefor[1]),float(nefor[2]),float(nefor[4]));
+    pg.square(float(packet[1]),float(packet[2]),float(packet[4]));
     pg.endDraw();
     image(pg, 10, 10);
   }
