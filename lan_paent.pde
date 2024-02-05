@@ -5,13 +5,16 @@ Textlabel posText;
 ColorPicker cp;
 Slider s;
 Client paentClient;
+Textarea chatArea;
 //ConnectBut = Button;
 PGraphics pg;
 int BColor = 200,port = 5510,x,y,Color;
 color col = color(255,255,255,255);
 Float Size;
 Boolean clRUN = false;
-String[] IP = new String[2],packet = new String[4];
+String[] IP = new String[2],packet = {"a","","","",""};
+char a;
+String chat;
 
 void setup() {
   background(BColor);
@@ -47,6 +50,13 @@ void setup() {
     .setFont(createFont("arial",12))
     ;
     
+  chatArea = cp5.addTextarea("chat")
+    .setPosition(658,169)
+    .setSize(300,300)
+    .showScrollbar()
+    .scroll(1) 
+    .setFont(createFont("arial",12));
+  
   pg.beginDraw();
   pg.background(color(255,255,255,255));
   pg.endDraw();
@@ -59,21 +69,30 @@ void draw() {
   image(pg, 10, 10);
   if(clRUN ==  true){
     if (mouseX > 10 & mouseX < 579+10 & mouseY > 10 & mouseY < 551+10 & mousePressed == true) {
-     paentClient.write("DRAW#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#;");
+     paentClient.write("D#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#;");
     }
-    
+  
   if(paentClient.active() == true & paentClient.available() > 0) {  
-    packet = split(paentClient.readStringUntil(59),'#');
-    //println(packet);
-    DrawDot(float(packet[1]),float(packet[2]),float(packet[4]),int(packet[3]));
-}
-}
-}
+    packet = split(paentClient.readString(),'#');
+    char a = packet[0].charAt(0);
+    println(a);
+    if(a == 'D') {
+        DrawDot(float(packet[1]),float(packet[2]),float(packet[4]),int(packet[3]));
+    }
+    if(a == 'M') {
+        chat = chat + packet[1] + "\n";
+        chatArea.setText(chat);
+    }
+}}}
 
 void connect() {
   IP = split(cp5.get(Textfield.class,"server ip").getText(),":");
   paentClient = new Client(this,IP[0],int(IP[1]));
   clRUN = true;
+}
+
+void mouseClicked() {
+  println(mouseX,mouseY);
 }
 
 void DrawDot(float x,float y,float IColor,int Size) {
