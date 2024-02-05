@@ -83,7 +83,7 @@ void draw() {
      paentClient.write("D#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#;");
     }
   if(paentClient.active() == true & paentClient.available() > 0) {  
-    packet = split(paentClient.readString(),'#');
+    packet = split(paentClient.readStringUntil(59),'#');
     char a = packet[0].charAt(0);
     println(a);
     if(a == 'D') {
@@ -116,5 +116,5 @@ void DrawDot(int x,int y,float IColor,int Size) {
 }
 
 void SendMSG() {
-  paentClient.write("M#"+cp5.get(Textfield.class,"Nickname").getText()+">"+cp5.get(Textfield.class,"ChatMSG").getText());
+  paentClient.write("M#"+cp5.get(Textfield.class,"Nickname").getText()+">"+cp5.get(Textfield.class,"ChatMSG").getText()+"#;");
 }
