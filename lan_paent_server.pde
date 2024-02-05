@@ -13,13 +13,13 @@ void setup()
 {
   size(400, 400);
   textFont(createFont("SanSerif", 16));
-  paentServer = new Server(this, port); // Starts a paentServer on port 10002
+  paentServer = new Server(this, port);
   background(0);
 }
 
 void mousePressed()
 {
-paentServer.write("M#SERVER> ROT EBAL");
+paentServer.write("M#SERVER>ROT EBAL");
 }
 
 void draw()
