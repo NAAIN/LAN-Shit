@@ -19,9 +19,7 @@ void setup()
 
 void mousePressed()
 {
-  // If the mouse clicked the paentServer stops
-  //paentServer.stop();
-  //paentServerRunning = false;
+paentServer.write("M#SERVER> ROT EBAL");
 }
 
 void draw()
@@ -36,7 +34,7 @@ void draw()
         paentServer.write(msg);
         background(0);
         text(msg,20,20);
-        //paentServer.write("CHAT_MESSAGE#SERVER> ROT EBAL");
+        
       }
     }
   } 
