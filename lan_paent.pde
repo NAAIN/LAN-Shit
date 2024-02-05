@@ -52,42 +52,35 @@ void setup() {
   pg.endDraw();
   pg.noStroke();
   image(pg, 10, 10);
-  
-  //chat.setText("123");
 }
 
 void draw() {
   background(200);
   image(pg, 10, 10);
   if(clRUN ==  true){
-  if(paentClient.active()) {
-  if(mousePressed == true) {
-    if (mouseX > 10 & mouseX < 579+10 & mouseY > 10 & mouseY < 551+10) {
-      paentClient.write("DRAW#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#;");
+    if (mouseX > 10 & mouseX < 579+10 & mouseY > 10 & mouseY < 551+10 & mousePressed == true) {
+     paentClient.write("DRAW#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#;");
     }
-  }
-  
-  if(paentClient.available() > 0) {
+    
+  if(paentClient.active() == true & paentClient.available() > 0) {  
     packet = split(paentClient.readStringUntil(59),'#');
     //println(packet);
-    pg.beginDraw();
-    pg.fill(int(packet[3]));
-    pg.rectMode(CENTER);
-    pg.square(float(packet[1]),float(packet[2]),float(packet[4]));
-    pg.endDraw();
-    image(pg, 10, 10);
-  }
-}else {
-  clRUN = false;
+    DrawDot(float(packet[1]),float(packet[2]),float(packet[4]),int(packet[3]));
 }
 }
-}
-void mouseClicked() {
-  println(mouseX,mouseY);
 }
 
 void connect() {
   IP = split(cp5.get(Textfield.class,"server ip").getText(),":");
   paentClient = new Client(this,IP[0],int(IP[1]));
   clRUN = true;
+}
+
+void DrawDot(float x,float y,float IColor,int Size) {
+    pg.beginDraw();
+    pg.fill(Size);
+    pg.rectMode(CENTER);
+    pg.square(x,y,IColor);
+    pg.endDraw();
+    image(pg, 10, 10);
 }
