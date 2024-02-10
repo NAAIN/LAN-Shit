@@ -1,17 +1,16 @@
 import processing.net.*;
 
-int port = 5510;
-boolean paentServerRun = true;
-int bgColor = 0;
-int direction = 1;
+int port = 5510,bgColor = 0,direction = 1;
 int textLine = 60;
 String msg = "";
+boolean paentServerRun = true;
+PGraphics pg;
 
 Server paentServer;
 
 void setup()
 {
-  size(400, 400);
+  size(1000, 800);
   textFont(createFont("SanSerif", 16));
   paentServer = new Server(this, port);
   background(0);
