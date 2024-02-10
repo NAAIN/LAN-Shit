@@ -8,7 +8,7 @@ Slider s;
 Client paentClient;
 
 PGraphics pg;
-int BColor = 200,port = 5510,x,y,Color,brushMode = 1;
+int BColor = 200,port = 5510,x,y,Color,brushMode;
 Float Size;
 Boolean clRUN = false,needPing = false;
 String[] IP = new String[2],packet = new String[4];
@@ -29,12 +29,18 @@ void setup() {//создание гуи дравбокса и всей нече�
   pg.noStroke();
   image(pg, 10, 10);
 }
+
 void draw() {
   background(200);
   image(pg, 10, 10);
   if (mouseX > 10 & mouseX < 579+10 & mouseY > 10 & mouseY < 551+10 & mousePressed == true & clRUN == true) {//начало дрочилова при нажатии в дравбоксе
-    paentClient.write("D#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#"+str(brushMode)+"#;");
-  }
+  switch(brushMode) {
+    case 1:
+      paentClient.write("D#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#"+str(brushMode)+"#;");
+      break;
+    case 2:
+      cp.setColorValue(color(get(mouseX-10,mouseY-10)));
+  }}
   if(clRUN == true) {
    if(paentClient.available() > 0) {
     packet = split(paentClient.readStringUntil(byte(';')),'#');
@@ -43,11 +49,10 @@ void draw() {
       case 'D':
         DrawDot(int(packet[1]),int(packet[2]),int(packet[3]),float(packet[4]));
         break;
-      case 'M':
+      case 'C':
         chatArea.setText(chatArea.getText() + packet[1] + "\n");
         break;
 }}}}
-
 
 void connect() {
   IP = split(cp5.get(Textfield.class,"server ip").getText(),":");
@@ -66,16 +71,17 @@ void DrawDot(int x,int y,int Size,float IColor) {
     pg.rectMode(CENTER);
     pg.square(x,y,IColor);
     pg.endDraw();
-    image(pg, 10, 10);
+    //image(pg, 10, 10);
 }
 
 void keyPressed(KeyEvent chatMSG) {//отправка в чат по кликанью на Enter
   if(chatMSG.getKeyCode() == 10) {
-    paentClient.write("M#"+cp5.get(Textfield.class,"Nickname").getText()+">"+cp5.get(Textfield.class,"ChatMSG").getText()+"#;");
+    paentClient.write("C#"+cp5.get(Textfield.class,"Nickname").getText()+">"+cp5.get(Textfield.class,"ChatMSG").getText()+"#;");
 }}
 
 void mouseClicked() {
   println(mouseX,mouseY);
+  println(brushMode);
 }
 
 void CreateGUI() {//жоское создание всего ГУИ
@@ -147,6 +153,7 @@ void CreateBrushModes() {
   .setLabel("Пипетка")
   .setPosition(975,95)
   .setSize(50,20);
+  brushMode = 1;
 }
 
 void Brush() {
