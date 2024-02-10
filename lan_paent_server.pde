@@ -16,17 +16,13 @@ ControlP5 cp5;
 void setup()
 {
   windowTitle("УЛЬТРА МЕГА КРУТОЙ СЕРВЕР PAINTа ПО СЕТИ111!!!!");
-  size(1000, 800);
+  size(1200, 800);
   textFont(createFont("Hack", 16));
   paentServer = new Server(this, port);
   pg = createGraphics(579, 551);
-  cp5 = new ControlP5(this);    
-  background(0);
-  pg.beginDraw();
-  pg.background(color(255,255,255,255));
-  pg.endDraw();
-  pg.noStroke();
-  image(pg, 10, 20);
+  cp5 = new ControlP5(this);
+  background(100);
+  createGUI();
 }
 
 void mousePressed()
@@ -44,7 +40,7 @@ void draw()
       if (thisClient.available() > 0) {
         msg = thisClient.readString();
         paentServer.write(msg);
-        background(0);
+        background(100);
         text(msg,20,15);
         image(pg, 10, 20);
         
@@ -57,6 +53,8 @@ void draw()
             chatArea.setText(chatArea.getText() + packet[1] + "\n");
             break;
         }
+        
+        
 }}}}
 
 void DrawDot(int x,int y,int Size,float IColor) {
@@ -66,4 +64,20 @@ void DrawDot(int x,int y,int Size,float IColor) {
     pg.square(x,y,IColor);
     pg.endDraw();
     //image(pg, 10, 20);
+}
+
+void createGUI() {
+  pg.beginDraw();
+  pg.background(color(255,255,255,255));
+  pg.endDraw();
+  pg.noStroke();
+  image(pg, 10, 20);
+  
+  chatArea = cp5.addTextarea("chat")
+  .setPosition(591,20)
+  .setSize(605,750)
+  .showScrollbar()
+  .scroll(1) 
+  .setColorBackground(0)
+  .setFont(createFont("Hack",12)); 
 }
