@@ -1,21 +1,22 @@
 import processing.net.*;
 import controlP5.*;
 ControlP5 cp5;
-Textarea BrushMode,chatArea;
+Textarea chatArea;
+Textlabel BrushMode;
 Textfield chatMSG;
 ColorPicker cp;
 Slider s;
 Client paentClient;
 
 PGraphics pg;
-int BColor = 200,port = 5510,x,y,Color,brushMode;
+int BColor = 200,port = 5510,x,y,Color,brushMode = 1;
 Float Size;
 Boolean clRUN = false,needPing = false,ready = false;
 String[] IP = new String[2],packet = new String[4];
 char a;
 String baseFont = "Hack";
 
-void setup() {//создание гуи дравбокса и всей нечести
+void setup() {//создание гуи дравбокса и всей нечесиэ
   windowTitle("УЛЬТРА МЕГА КРУТОЙ PAINT ПО СЕТИ111!!!!");
   background(BColor);
   size(1250,600);
@@ -28,20 +29,22 @@ void setup() {//создание гуи дравбокса и всей нече�
   pg.endDraw();
   pg.noStroke();
   image(pg, 10, 10);
-  ready = true;//костыль чтоб не срало ошибками при старте(ну типа все воиды кнопок продрачиваются, хз нахера но продрачиваются)
+  ready = true;
 }
-
 void draw() {
   background(200);
+  BrushMode.draw();
   image(pg, 10, 10);
   if (mouseX > 10 & mouseX < 579+10 & mouseY > 10 & mouseY < 551+10 & mousePressed == true & clRUN == true) {//начало дрочилова при нажатии в дравбоксе
   switch(brushMode) {
     case 1:
-      paentClient.write("D#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#"+str(brushMode)+"#;");
-      break;
+    paentClient.write("D#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#;");
+    break;
     case 2:
-      cp.setColorValue(color(get(mouseX-10,mouseY-10)));
-  }}
+    cp.setColorValue(get(mouseX - 10,mouseY - 10));
+    break;
+    }
+  }
   if(clRUN == true) {
    if(paentClient.available() > 0) {
     packet = split(paentClient.readStringUntil(byte(';')),'#');
@@ -50,31 +53,25 @@ void draw() {
       case 'D':
         DrawDot(int(packet[1]),int(packet[2]),int(packet[3]),float(packet[4]));
         break;
-      case 'C':
+      case 'M':
         chatArea.setText(chatArea.getText() + packet[1] + "\n");
         break;
 }}}}
-/*
-void mouseClicked() {
-  println(mouseX,mouseY);
-}
-*/
-void keyPressed(KeyEvent chatMSG) {//отправка в чат по кликанью на Enter
-  if(chatMSG.getKeyCode() == 10) {
-    paentClient.write("C#"+cp5.get(Textfield.class,"Nickname").getText()+">"+cp5.get(Textfield.class,"ChatMSG").getText()+"#;");
-}}
+
 
 void connect() {
-  if(ready) { //чтоб не срало :3
-    IP = split(cp5.get(Textfield.class,"server ip").getText(),":");
-    paentClient = new Client(this,IP[0],int(IP[1]));
-    if(paentClient.active()) clRUN = true; else chatArea.setText("АШИБКА СТОП 0х0000 НЕ УДАЛОС ПОДКЛЮЧИЦА!1!!!");
+  if(ready) {
+  IP = split(cp5.get(Textfield.class,"server ip").getText(),":");
+  paentClient = new Client(this,IP[0],int(IP[1]));
+  if(paentClient.active()) clRUN = true; else chatArea.setText("АШИПКА 0х00000ФБББВЫБ НЕ УДАЛОСЬ ПОДКЛЮЧИЦА11!!!!1!!!!");
   }
 }
 
 void disconnect() {
-  if(clRUN) paentClient.stop();
+  if(clRUN) {
+  paentClient.stop();
   clRUN = false;
+  }
 }
 
 void DrawDot(int x,int y,int Size,float IColor) {
@@ -83,20 +80,16 @@ void DrawDot(int x,int y,int Size,float IColor) {
     pg.rectMode(CENTER);
     pg.square(x,y,IColor);
     pg.endDraw();
-    //image(pg, 10, 10);
+    image(pg, 10, 10);
 }
 
-void BrushMode() {
-  if(ready) {
-  brushMode = 1;
-  BrushMode.setText("Режим:Кисть");
-  }
-}
-void PickerMode() {
-  if(ready) {
-  brushMode = 2;
-  BrushMode.setText("Режим:Пипетка");
-  }
+void keyPressed(KeyEvent chatMSG) {//отправка в чат по кликанью на Enter
+  if(chatMSG.getKeyCode() == 10) {
+    paentClient.write("M#"+cp5.get(Textfield.class,"Nickname").getText()+">"+cp5.get(Textfield.class,"ChatMSG").getText()+"#;");
+}}
+
+void mouseClicked() {
+  println(mouseX,mouseY);
 }
 
 void CreateGUI() {//жоское создание всего ГУИ
@@ -111,10 +104,6 @@ void CreateGUI() {//жоское создание всего ГУИ
   .setSize(240,20)
   .setValue(5)
   .setArrayValue(new float[] {50, 50});   
-  cp5.addTextfield("server ip")
-  .setPosition(917,435)
-  .setText("127.0.0.1:5510")
-  .setSize(105,20);
   
   cp5.addButton("connect")
   .setValue(0)
@@ -124,9 +113,16 @@ void CreateGUI() {//жоское создание всего ГУИ
   .setValue(0)
   .setPosition(1065,475)
   .setSize(60,20);
+  cp5.addTextfield("server ip")
+  .setLabel("IP")
+  .setFont(createFont(baseFont,12))
+  .setColorLabel(0)
+  .setPosition(917,435)
+  .setText("127.0.0.1:5510")
+  .setSize(207,20);
   
   cp5.addTextlabel("promo")
-  .setPosition(590,525)
+  .setPosition(590,510)
   .setText("Сделал некий NAAIN \nИз недокомпании ООО 'аутизм инк' \nt.me/CHvK_NAAIN \n1209-2030 Все права отданы арабам")
   .setColor(0)
   .setFont(createFont(baseFont,12));
@@ -142,30 +138,46 @@ void CreateGUI() {//жоское создание всего ГУИ
   .setPosition(592,475)
   .setFont(createFont(baseFont,10))
   .setText("")
+  .setLabel("")
   .setSize(324,20);
   cp5.addTextfield("Nickname")
   .setPosition(918,475)
-  .setFont(createFont(baseFont,10))
-  .setText("")
+  .setFont(createFont(baseFont,12))
+  .setColorLabel(0)
+  .setLabel("Никнейм")
+  .setText("somecoolname")
   .setSize(100,20);
 }
 
 void CreateBrushModes() {
-  BrushMode = cp5.addTextarea("")
-  .setPosition(1030,95)
+  BrushMode = cp5.addTextlabel("BrushMode")
+  .setPosition(1025,98)
   .setFont(createFont(baseFont,12))
   .setText("Режим:Кисть")
   .setColor(0);
-  cp5.addButton("PickerMode")
-  .setFont(createFont(baseFont,10))
-  .setValue(0)
-  .setLabel("Пипетка")
-  .setPosition(975,95)
-  .setSize(50,20);
   cp5.addButton("BrushMode")
   .setLabel("Кисть")
   .setFont(createFont(baseFont,10))
   .setValue(0)
   .setPosition(920,95)
   .setSize(50,20);
+  cp5.addButton("PickerMode")
+  .setFont(createFont(baseFont,10))
+  .setValue(0)
+  .setLabel("Пипетка")
+  .setPosition(975,95)
+  .setSize(50,20);
+}
+
+void BrushMode() {
+  if(ready) { 
+    brushMode = 1;  
+    BrushMode.setText("Режим:Кисть"); 
+  }
+}
+void PickerMode() {
+  if(ready){ 
+    brushMode = 2;  
+    BrushMode.setText("Режим:Пипетка"); 
+  }
 }
