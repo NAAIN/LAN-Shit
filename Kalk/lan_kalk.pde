@@ -53,7 +53,10 @@ void OPlus(){CSend("P#"+InputFormula.getText() + "#;");}
 void OMinus(){CSend("D#"+InputFormula.getText() + "#;");}
 void ODivide(){CSend("d#"+InputFormula.getText() + "#;");}
 void OMultiply(){CSend("m#"+InputFormula.getText() + "#;");}
-
+void OErase() { 
+  int ILen = InputFormula.getText().length();
+  InputFormula.setText(InputFormula.getText().substring(0,ILen - 1));
+}
 void keyPressed(KeyEvent chatMSG) { if(chatMSG.getKeyCode() == 10 & klRUN) CSend("M#"+nickname.getText()+">"+chatmsg.getText()+"#;"); }
 
 
@@ -89,6 +92,7 @@ void createKeypad() {
   cp5.addButton("OMinus").setPosition(keypadX+107,keypadY+25).setLabel("-").setSize(35,20);
   cp5.addButton("ODivide").setPosition(keypadX+107,keypadY+50).setLabel("/").setSize(35,20);
   cp5.addButton("OMultiply").setPosition(keypadX+107,keypadY+72).setLabel("*").setSize(35,20);
+  cp5.addButton("OErase").setPosition(keypadX+71,keypadY+72).setLabel("<-").setSize(35,20);
   InputFormula = cp5.addTextfield("InputFormula").setLabel("").setPosition(keypadX,keypadY-22).setSize(141,20);
   ServerFormula = cp5.addTextfield("ServerFormula").setLabel("").setPosition(keypadX,keypadY-45).setSize(141,20);
 }
