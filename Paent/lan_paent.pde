@@ -47,28 +47,36 @@ void draw() {
     }
   }
    if(clRUN && paentClient.available() > 0) {
-    packet = split(paentClient.readStringUntil(byte(';')),'#');
+    String received = paentClient.readString();
+    if(received.length() > 0) {
+    packet = split(received,'#');
     char a = packet[0].charAt(0);
     switch(a) {
       case 'D':
         DrawDot(int(packet[1]),int(packet[2]),int(packet[3]),float(packet[4]));
         break;
       case 'M':
-        chatArea.setText(chatArea.getText() + packet[1] + "\n");
+        chatArea.setText(chatArea.getText() + packet[1]);
         break;
       case 'd':
         chatArea.setText("");
         break;
-}}}
+      default:
+        chatArea.setText(chatArea.getText() + "АШИПКА 0х00001СУКАА НЕ УДАЛОСЬ РАСПАРСИТЬ ПРИШЕДШЕЕ САБЩЕНЕ, СЕРВ/КЛИЕНТ ГОВНА11!!!!1!!!!\n");
+        break;
+}}else{
+  chatArea.setText(chatArea.getText() + "АШИПКА 0х00000СУКАА НЕ УДАЛОСЬ РАСПАРСИТЬ ПРИШЕДШЕЕ САБЩЕНЕ, ОНО МЕНЬШЕ 0 БАЙТ11!!!!1!!!!\n");
+}
+}}
 
 void connect() {
   if(ready) {
   IP = split(cp5.get(Textfield.class,"server ip").getText(),":");
   paentClient = new Client(this,IP[0],int(IP[1]));
-  if(paentClient.active()) { 
+  if(paentClient.active()) { ы
     clRUN = true; 
     paentClient.write("d#;");
-  }else chatArea.setText("АШИПКА 0х00000ФБББВЫБ НЕ УДАЛОСЬ ПОДКЛЮЧИЦА11!!!!1!!!!");
+  }else chatArea.setText(chatArea.getText() + "АШИПКА 0х00000ФБББВЫБ НЕ УДАЛОСЬ ПОДКЛЮЧИЦА11!!!!1!!!!\n");
   }
 }
 
@@ -76,6 +84,8 @@ void disconnect() {
   if(clRUN) {
   paentClient.stop();
   clRUN = false;
+  }else{
+    chatArea.setText(chatArea.getText() + "АШИПКА 0х00000ХУЙХУЙ НЕ УДАЛОСЬ ОТКЛЮЧИЦА11!!!!1!!!!\n");
   }
 }
 
@@ -102,7 +112,11 @@ void DrawDot(int x,int y,int Size,float IColor) {
 }
 
 void keyPressed(KeyEvent chatMSG) {
-  if(chatMSG.getKeyCode() == 10) paentClient.write("M#"+cp5.get(Textfield.class,"Nickname").getText()+">"+cp5.get(Textfield.class,"ChatMSG").getText()+"#;");
+  if(chatMSG.getKeyCode() == 10) {
+    paentClient.write("M#"+cp5.get(Textfield.class,"Nickname").getText()+">"+cp5.get(Textfield.class,"ChatMSG").getText()+"\n#;");
+  }else{
+    if(!clRUN) chatArea.setText(chatArea.getText() + "АШИПКА 0х00000ЫАААА НЕ УДАЛОСЬ ОТПРАВИТЬ САБЩЕНЕ11!!!!1!!!!\n");
+  }
 }
 
 void mouseClicked() {

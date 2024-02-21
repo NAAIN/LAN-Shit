@@ -27,14 +27,13 @@ void setup()
 
 void mousePressed()
 {
-paentServer.write("M#SERVER>ROT EBAL");
+paentServer.write("M#SERVER>ROT EBAL\n");
 }
 
 void draw()
 {
   if (paentServerRun == true)
   {
-    //text("server", 15, 45);
     Client thisClient = paentServer.available();
     if (thisClient != null) {
       if (thisClient.available() > 0) {
@@ -50,7 +49,7 @@ void draw()
             DrawDot(int(packet[1]),int(packet[2]),int(packet[3]),float(packet[4]));
             break;
           case 'M':
-            chatArea.setText(chatArea.getText() + packet[1] + "\n");
+            chatArea.setText(chatArea.getText() + packet[1]);
             break;
           case 'd':
             paentServer.write("d#;");
@@ -67,7 +66,6 @@ void DrawDot(int x,int y,int Size,float IColor) {
     pg.rectMode(CENTER);
     pg.square(x,y,IColor);
     pg.endDraw();
-    //image(pg, 10, 20);
 }
 
 void createGUI() {
