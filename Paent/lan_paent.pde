@@ -36,7 +36,7 @@ void setup() {//создание гуи дравбокса и всей нече�
 void draw() {
   background(200);
   image(pg, 10, 10);
-  if (mouseX > 10 & mouseX < 579+10 & mouseY > 10 & mouseY < 551+10 & mousePressed == true) {//начало дрочилова при нажатии в дравбоксе
+  if (mouseX > 10 & mouseX < 579+10 & mouseY > 10 & mouseY < 551+10 & mousePressed && clRUN) {//начало дрочилова при нажатии в дравбоксе
   switch(brushMode) {
     case 1:
     paentClient.write("D#"+(mouseX - 10)+"#"+(mouseY - 10)+"#"+cp.getColorValue()+"#"+s.getValue()+"#;");
