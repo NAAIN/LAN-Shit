@@ -49,8 +49,12 @@ void draw()
           case 'D':
             DrawDot(int(packet[1]),int(packet[2]),int(packet[3]),float(packet[4]));
             break;
-          case 'C':
+          case 'M':
             chatArea.setText(chatArea.getText() + packet[1] + "\n");
+            break;
+          case 'd':
+            paentServer.write("d#;");
+            paentServer.write("M#" + chatArea.getText()+"#;");
             break;
         }
         
@@ -79,5 +83,6 @@ void createGUI() {
   .showScrollbar()
   .scroll(1) 
   .setColorBackground(0)
+  .setText("чатек\n")
   .setFont(createFont("Hack",12)); 
 }
